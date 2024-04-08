@@ -1,5 +1,5 @@
 import { sendRequest } from "@/utils/api";
-import ProductsTable from "../../components/table/table.products";
+import ProductsTable from "../../components/table/table-products.main";
 
 
 
@@ -9,7 +9,7 @@ const getProducts = async (): Promise<IResponse<ProductResponse>> => {
     queryParams: {
       skip: 0,
       order: "ASC",
-      take: 1000,
+      take: 100,
       page: 1
     }
 
