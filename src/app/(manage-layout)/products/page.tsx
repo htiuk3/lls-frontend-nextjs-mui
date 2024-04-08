@@ -9,7 +9,7 @@ const getProducts = async (): Promise<IResponse<ProductResponse>> => {
     queryParams: {
       skip: 0,
       order: "ASC",
-      take: 25,
+      take: 1000,
       page: 1
     }
 

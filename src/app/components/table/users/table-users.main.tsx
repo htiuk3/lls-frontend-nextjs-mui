@@ -21,18 +21,15 @@ import {
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Table as MuiTable, Select, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, useTheme } from '@mui/material'
+import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Table as MuiTable, Select, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material'
 import {
   compareItems,
   RankingInfo,
   rankItem,
 } from '@tanstack/match-sorter-utils'
-import DebouncedInput from '../input/debounced.input'
-import Filter from './table.filter'
-import { withCommas } from '@/utils/utils'
-import theme from '@/theme'
-import { cyan, grey } from '@mui/material/colors'
-import Image from 'next/image'
+import { makeData, Person } from '../makeDate'
+import DebouncedInput from '../../input/debounced.input'
+import Filter from '../table.filter'
 declare module '@tanstack/react-table' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>
@@ -71,66 +68,69 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
 }
 interface TableUsersProps {
   meta: TPageMeta;
-  list: TProduct[]
+  list: TUser[]
 }
-export default function TableProducts({ meta, list }: TableUsersProps) {
+
+export default function TableUsers({ meta, list }: TableUsersProps) {
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
   const [globalFilter, setGlobalFilter] = React.useState('')
 
-  const columns = React.useMemo<ColumnDef<TProduct, any>[]>(
+  const columns = React.useMemo<ColumnDef<TUser, any>[]>(
     () => [
-
-      {
-        accessorFn: row => row.kiotImage,
-        id: 'kiotImage',
-        cell: info => info.getValue() ? <Image loading="lazy" width={60} height={60} alt={info.getValue()} src={info.getValue()} /> : null,
-        header: () => "",
-        footer: props => props.column.id,
-      },
-      {
-        accessorFn: row => row.code,
-        id: 'code',
-        cell: info => info.getValue(),
-        header: () => "Mã sản phẩm",
-        footer: props => props.column.id,
-      },
       {
         accessorFn: row => row.name,
         id: 'name',
         cell: info => info.getValue(),
-        header: () => "Tên sản phẩm",
+        header: () => <span>Tên</span>,
+        footer: props => props.column.id,
+        filterFn: 'fuzzy',
+        sortingFn: fuzzySort,
+      },
+      {
+        accessorFn: row => row.username,
+        id: 'username',
+        cell: info => info.getValue(),
+        header: () => "Tên đăng nhập",
         footer: props => props.column.id,
       },
       {
-        accessorFn: row => row.cost,
-        id: 'cost',
-        header: 'Giá vốn',
-        cell: (info) => withCommas(info.renderValue()),
+        accessorFn: row => row?.role ? `${row.role.code} - ${row.role.name}` : "Chưa phân nhóm",
+        id: 'role',
+        header: 'Nhóm người dùng',
+        cell: info => info.getValue(),
+        footer: props => props.column.id,
+        filterFn: 'fuzzy',
+        sortingFn: fuzzySort,
+      },
+      {
+        accessorFn: row => row.phoneNumber,
+        id: 'phoneNumber',
+        cell: info => info.getValue(),
+        header: () => "Số điện thoại",
+        footer: props => props.column.id,
+        filterFn: 'fuzzy',
+        sortingFn: fuzzySort,
+      },
+      {
+        accessorFn: row => row.isActive,
+        id: 'isActive',
+        header: 'Trạng thái',
+        cell: (info) => info.getValue() === true ? "Active" : "Blocked",
         footer: props => props.column.id,
       },
       {
-        accessorFn: row => row.retailPrice,
-        id: 'retailPrice',
-        header: 'Giá lẻ',
-        cell: (info) => withCommas(info.getValue()),
-        footer: props => props.column.id,
-      },
-      {
-        accessorFn: row => row.onHand,
-        id: 'onHand',
-        header: 'Kho',
-        cell: (info) => info.getValue(),
+        accessorKey: 'progress',
+        header: 'Profile Progress',
         footer: props => props.column.id,
       },
     ],
     []
   )
 
-  const [data, setData] = React.useState<TProduct[]>(list)
-  const theme = useTheme()
+  const [data, setData] = React.useState<TUser[]>(list)
 
   const table = useReactTable({
     data,
@@ -198,11 +198,11 @@ export default function TableProducts({ meta, list }: TableUsersProps) {
                               desc: ' 🔽',
                             }[header.column.getIsSorted() as string] ?? null}
                           </Box>
-                          {/* {header.column.getCanFilter() ? (
+                          {header.column.getCanFilter() ? (
                             <Box>
                               <Filter column={header.column} table={table} />
                             </Box>
-                          ) : null} */}
+                          ) : null}
                         </>
                       )}
                     </TableCell>
@@ -214,15 +214,7 @@ export default function TableProducts({ meta, list }: TableUsersProps) {
           <TableBody>
             {table.getRowModel().rows.map(row => {
               return (
-                <TableRow
-                  key={row.id}
-                  sx={{
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: cyan[50]
-                    }
-                  }}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map(cell => {
                     return (
                       <TableCell

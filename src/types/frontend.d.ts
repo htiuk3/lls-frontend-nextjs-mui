@@ -2,8 +2,7 @@ export { };
 // https://bobbyhadz.com/blog/typescript-make-types-global#declare-global-types-in-typescript
 
 declare global {
-  interface IProduct {
-    stt: number,
+  type TProduct = {
     id: string,
     code: string,
     name: string,
@@ -14,10 +13,10 @@ declare global {
     onHand: number,
     kiotImage: string,
     kiotCategoryId: number,
-    // isActive: boolean,
-    // createdAt: Date,
-    // updatedAt: Date,
-    // deletedAt: Date
+    isActive: boolean,
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt: Date | null
   }
 
   type TUser = {

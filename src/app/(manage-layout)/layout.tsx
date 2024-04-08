@@ -1,5 +1,5 @@
 import theme from '@/theme';
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Quản lý Lọ Lem Shop",
   description: "Phần mềm quản lý bán hàng Lọ Lem Shop - Created by Dat Vo",
 };
-
+const drawerWidth = 240
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -22,9 +22,13 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             <CssBaseline />
 
             <MainDrawer />
-            <Container maxWidth="xl" sx={{ ml: { xs: 0, md: 32 }, mt: 10 }} >
+            <Box sx={{
+              ml: { xs: 0, md: 32 },
+              mt: 10,
+              mr: 2,
+            }}>
               {props.children}
-            </Container>
+            </Box>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

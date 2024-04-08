@@ -1,5 +1,4 @@
-import ExTable from "@/app/components/table/ex.table";
-import UsersTable from "@/app/components/table/table.users";
+import TableUsers from "@/app/components/table/users/table-users.main";
 import { sendRequest } from "@/utils/api";
 
 
@@ -30,7 +29,7 @@ export default async function ProductsPage() {
   return (
     <>
       {/* <UsersTable meta={result.data.meta} list={result.data.list} /> */}
-      <ExTable />
+      <TableUsers meta={result.data.meta} list={result.data.list} />
     </>
   )
 }

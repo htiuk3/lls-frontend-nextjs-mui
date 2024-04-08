@@ -27,9 +27,9 @@ import {
   rankItem,
 } from '@tanstack/match-sorter-utils'
 import { makeData, Person } from './makeDate'
-import { Box, FormControl, InputLabel, MenuItem, Table as MuiTable, NativeSelect, Select, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-
-
+import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Table as MuiTable, NativeSelect, Select, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 declare module '@tanstack/react-table' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>
@@ -159,10 +159,9 @@ export default function ExTable() {
         <DebouncedInput
           value={globalFilter ?? ''}
           onChange={value => setGlobalFilter(String(value))}
-          placeholder="Search all columns..."
+          placeholder="Tìm kiếm trong bảng..."
         />
       </div>
-      <div className="h-2" />
       <TableContainer>
 
 
@@ -225,66 +224,8 @@ export default function ExTable() {
           </TableBody>
         </MuiTable>
       </TableContainer>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<<'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          {'<'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>'}
-        </button>
-        <button
-          className="border rounded p-1"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          {'>>'}
-        </button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <span className="flex items-center gap-1">
-          | Go to page:
-          <input
-            type="number"
-            defaultValue={table.getState().pagination.pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              table.setPageIndex(page)
-            }}
-            className="border p-1 rounded w-16"
-          />
-        </span>
-        <select
-          value={table.getState().pagination.pageSize}
-          onChange={e => {
-            table.setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, justifyContent: "flex-end", marginTop: 4 }}>
         <FormControl size="small" sx={{ minWidth: 120 }}>
           <InputLabel id="number-in-page">Số lượng</InputLabel>
           <Select
@@ -301,6 +242,51 @@ export default function ExTable() {
           ))}
           </Select>
         </FormControl>
+        <Button
+          size="small"
+          onClick={() => table.setPageIndex(0)}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Trang đầu
+        </Button>
+        <IconButton
+          color='primary'
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}>
+          <NavigateBeforeIcon />
+        </IconButton>
+        <IconButton
+          color='primary'
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          <NavigateNextIcon />
+        </IconButton>
+        <Button
+          size="small"
+          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          disabled={!table.getCanNextPage()}
+        >
+          Trang cuối
+        </Button>
+        <Typography>
+          {`Trang ${table.getState().pagination.pageIndex + 1} / ${table.getPageCount()} | Đến trang: `}
+        </Typography>
+        <TextField
+          sx={{
+            maxWidth: 80
+          }}
+          size="small"
+          type="number"
+          defaultValue={table.getState().pagination.pageIndex + 1}
+          onChange={e => {
+            const page = e.target.value ? Number(e.target.value) - 1 : 0
+            table.setPageIndex(page)
+          }}
+        />
+
+
+
       </Box>
       <div>{table.getPrePaginationRowModel().rows.length} Rows</div>
       <div>
@@ -381,25 +367,29 @@ function Filter({
         value={(columnFilterValue ?? '') as string}
         onChange={value => column.setFilterValue(value)}
         placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-        className="w-36 border shadow rounded"
+        style={{
+          borderRadius: "4px",
+          borderColor: "transparent",
+        }}
         list={column.id + 'list'}
       />
-      <div className="h-1" />
     </>
   )
 }
 
+interface DebouncedInputProps {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+}
 // A debounced input react component
 function DebouncedInput({
   value: initialValue,
   onChange,
   debounce = 500,
   ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+}: DebouncedInputProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  //
   const [value, setValue] = React.useState(initialValue)
 
   React.useEffect(() => {
@@ -415,6 +405,7 @@ function DebouncedInput({
   }, [value])
 
   return (
+
     <input {...props} value={value} onChange={e => setValue(e.target.value)} />
   )
 }
