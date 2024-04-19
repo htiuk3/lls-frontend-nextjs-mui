@@ -5,7 +5,7 @@ import { sendRequest } from "@/utils/api";
 
 const getUsers = async (): Promise<IResponse<UserResponse>> => {
   const res = await sendRequest({
-    url: `${process.env.BASE_URL}/users`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/users`,
     queryParams: {
       skip: 0,
       order: "ASC",

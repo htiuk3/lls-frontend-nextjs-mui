@@ -1,11 +1,10 @@
 import Copyright from '@/app/components/Copyright';
-import { sendRequest } from '@/utils/api';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
+import Image from 'next/image';
 import NextLink from 'next/link';
-
 
 
 export default async function Home() {
@@ -26,7 +25,9 @@ export default async function Home() {
         <Link href="/products" color="primary" component={NextLink}>
           Go to the Products page
         </Link>
+        <Image src="/girl-with-cosmetics.svg" alt="girl with cosmetics" width={500} height={500} />
         <Copyright />
+
       </Box>
     </Container>
   );

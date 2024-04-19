@@ -14,6 +14,12 @@ const nextConfig = {
         port: '',
         pathname: '/lolemshopct/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

@@ -23,9 +23,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
 
             <MainDrawer />
             <Box sx={{
-              ml: { xs: 0, md: 32 },
+              ml: { xs: 1, md: `${drawerWidth + 16}px` },
               mt: 10,
-              mr: 2,
+              mr: { xs: 1, md: 2 }
             }}>
               {props.children}
             </Box>

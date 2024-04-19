@@ -1,10 +1,13 @@
 'use client'
+import { getProducts } from '@/app/(manage-layout)/products/page';
+import { scrollToTop } from '@/app/hooks/scrollToTop';
+import { CONSTANTS } from '@/utils/utils';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import { useTheme } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,7 +16,7 @@ import TableRow from '@mui/material/TableRow';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
 import EnhancedTableHead, { EnhancedTableToolbar } from './table-products.head';
-import TableProductsPagination from './table-products.pagination';
+import TableProductsPagination from '../table.pagination';
 
 
 interface TableProductsProps {
@@ -21,12 +24,25 @@ interface TableProductsProps {
   list: TProduct[]
 }
 export default function TableProducts({ list, meta }: TableProductsProps) {
-  const theme = useTheme()
   const [rows, setRows] = useState<TProduct[]>(list)
-  const [pageMeta, setPageMeta] = useState<TPageMeta>(meta)
+  const [currentPage, setCurrentPage] = useState<number>(meta.page)
+  const [take, setTake] = useState<number>(meta.take)
+  const [pageCount, setPageCount] = useState<number>(meta.pageCount)
+  const [total, setTotal] = useState<number>(meta.itemCount)
   const [selected, setSelected] = useState<readonly string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [message, setMessage] = useState<any>()
+
+  const [open, setOpen] = useState<boolean>(false)
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,16 +54,9 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
     setSelected([]);
   };
 
-  const handleNextClick = () => {
-    console.log("Next")
-  }
-
-  const handlePreviousClick = () => {
-    console.log("Previous")
-  }
 
   const handlePageClick = (page: number) => {
-    console.log("Go to page ", page)
+    setCurrentPage(page)
   }
 
 
@@ -77,26 +86,44 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
 
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target)
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPageMeta({
-      ...pageMeta,
-      take: parseInt(event.target.value),
-      page: 1,
-      hasPreviousPage: false
-    })
-    setPage(0);
+    setTake(parseInt(event.target.value))
+    setCurrentPage(1)
   };
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
   useEffect(() => {
-    console.log(pageMeta)
-  }, [pageMeta])
+    const fetchData = async () => {
+      setIsLoading(true)
+      try {
+        const result = await getProducts(take, currentPage)
+        setCurrentPage(result.data.meta.page)
+        setPageCount(result.data.meta.pageCount)
+        setTotal(result.data.meta.itemCount)
+        setRows(result.data.list)
+        scrollToTop()
+      } catch (error) {
+        setOpen(true)
+        setMessage("Có lỗi khi kết nối đến máy chủ")
+        console.log(">>> Error ", error)
+      }
+      setIsLoading(false)
+    }
+    console.log(">>> Check current: ", take, "--", currentPage)
+
+
+    if (currentPage !== meta.page || take !== meta.take) fetchData()
+  }, [currentPage, take])
 
 
   return (
     <Box sx={{ width: '100%', padding: 4 }}>
+      <Snackbar
+        open={open}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        message={message}
+      />
       <Paper sx={{
         width: '100%',
         mb: 4,
@@ -141,7 +168,7 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
                       />
                     </TableCell>
                     <TableCell padding='checkbox'>
-                      <Image alt={row.name} src={row?.kiotImage ? row.kiotImage : ""} width={60} height={60} />
+                      <Image alt={row.name} src={row?.kiotImage ? row.kiotImage : CONSTANTS.imageHolder} width={60} height={60} />
                     </TableCell>
                     <TableCell align="left">{row.name}</TableCell>
                     <TableCell
@@ -169,9 +196,10 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
         </TableContainer>
       </Paper>
       <TableProductsPagination
-        meta={meta}
-        onNextClick={handleNextClick}
-        onPreviousClick={handlePreviousClick}
+        take={take}
+        currentPage={currentPage}
+        pageCount={pageCount}
+        total={total}
         onPageClick={handlePageClick}
         onRowsPerPageChange={e => handleChangeRowsPerPage(e)} />
     </Box>

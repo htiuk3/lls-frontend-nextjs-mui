@@ -33,6 +33,34 @@ declare global {
     code: string
     name: string
   }
+  type TInvoice = {
+    id: string
+    code: string
+    soldByKiotId: number
+    soldByKiotName: string
+    customerKiotId: string
+    customerCode: string | null
+    orderCode: string
+    total: number
+    totalPayment: number
+    kiotStatus: number
+    kiotStatusValue: string
+    createdAt: Date
+    updatedAt: Date
+    invoiceDetails: InvoiceItem[]
+  }
+  type InvoiceItem = {
+    id: string
+    productCode: string
+    quantity: number
+    price: number
+    discount: number
+    subTotal: number
+    note: string
+    createdAt: Date
+    updatedAt: Date
+
+  }
   type TPageMeta = {
     page: number
     take: number
