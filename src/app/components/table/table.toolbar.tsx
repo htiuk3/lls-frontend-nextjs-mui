@@ -42,7 +42,7 @@ export function TableToolbar({ numSelected, title }: EnhancedTableToolbarProps) 
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
+        <Tooltip title="Xoá">
           <IconButton>
             <DeleteIcon />
           </IconButton>

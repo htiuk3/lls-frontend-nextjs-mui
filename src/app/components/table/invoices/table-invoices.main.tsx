@@ -1,22 +1,17 @@
 'use client'
 import { getInvoices } from '@/app/(manage-layout)/invoices/page';
 import { scrollToTop } from '@/app/hooks/scrollToTop';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { Snackbar, Typography } from '@mui/material';
+import { Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
 import { ChangeEvent, useEffect, useState } from 'react';
-import TableProductsPagination from '../table.pagination';
+import TablePagination from '../table.pagination';
 import { TableToolbar } from '../table.toolbar';
-import TableInvoicesHead from './table-invoices.head';
 import TableInvoiceRow from './table-invoice.row';
+import TableInvoicesHead from './table-invoices.head';
 
 
 interface TableInvoicesProps {
@@ -31,7 +26,6 @@ export default function TableInvoices({ list, meta }: TableInvoicesProps) {
   const [total, setTotal] = useState<number>(meta.itemCount)
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [page, setPage] = useState(0);
   const [message, setMessage] = useState<any>()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -126,7 +120,9 @@ export default function TableInvoices({ list, meta }: TableInvoicesProps) {
         width: '100%',
         mb: 4,
         borderRadius: 4,
-        boxShadow: `rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px`
+        boxShadow: {
+          md: `rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px`
+        }
       }}>
         <TableToolbar title="Danh sách hoá đơn" numSelected={selected.length} />
         <TableContainer>
@@ -151,7 +147,8 @@ export default function TableInvoices({ list, meta }: TableInvoicesProps) {
                     labelId={labelId}
                     isItemSelected={isItemSelected}
                     row={row}
-                    handleRowClick={(event) => handleClick(event, row.id)} />
+                    handleCheckBoxClick={(event) => handleClick(event, row.id)}
+                  />
                 );
               })}
 
@@ -159,7 +156,7 @@ export default function TableInvoices({ list, meta }: TableInvoicesProps) {
           </Table>
         </TableContainer>
       </Paper>
-      <TableProductsPagination
+      <TablePagination
         take={take}
         currentPage={currentPage}
         pageCount={pageCount}

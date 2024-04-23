@@ -2,7 +2,7 @@
 
 import { Box, IconButton, MenuItem, TextField } from "@mui/material";
 import { ChangeEvent, Fragment } from "react";
-interface TableProductsPaginationProps {
+interface TablePaginationProps {
   take: number
   currentPage: number
   pageCount: number
@@ -10,7 +10,7 @@ interface TableProductsPaginationProps {
   onPageClick: (page: number) => void
   onRowsPerPageChange: (event: ChangeEvent<HTMLInputElement>) => void
 }
-export default function TableProductsPagination({ onPageClick, onRowsPerPageChange, take, currentPage, pageCount, total }: TableProductsPaginationProps) {
+export default function TablePagination({ onPageClick, onRowsPerPageChange, take, currentPage, pageCount, total }: TablePaginationProps) {
   return <Box sx={{
     display: "flex",
     gap: 2,

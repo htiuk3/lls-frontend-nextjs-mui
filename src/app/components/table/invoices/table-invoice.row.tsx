@@ -7,19 +7,18 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 
 
 interface TableInvoiceRowProps {
-  handleRowClick: (event: any) => void
+  handleCheckBoxClick: (event: any) => void
   isItemSelected: boolean
   labelId: string
   row: TInvoice
 }
 
-function TableInvoiceRow({ handleRowClick, isItemSelected, labelId, row }: TableInvoiceRowProps) {
+function TableInvoiceRow({ handleCheckBoxClick, isItemSelected, labelId, row }: TableInvoiceRowProps) {
   const [open, setOpen] = useState<boolean>(false)
   return (
     <Fragment>
       <TableRow
         hover
-        onClick={handleRowClick}
         role="checkbox"
         aria-checked={isItemSelected}
         tabIndex={-1}
@@ -32,6 +31,7 @@ function TableInvoiceRow({ handleRowClick, isItemSelected, labelId, row }: Table
       >
         <TableCell padding="checkbox">
           <Checkbox
+            onClick={handleCheckBoxClick}
             color="primary"
             checked={isItemSelected}
             inputProps={{
@@ -72,22 +72,22 @@ function TableInvoiceRow({ handleRowClick, isItemSelected, labelId, row }: Table
         <TableCell sx={{
           paddingBottom: 0,
           paddingTop: 0
-        }} colSpan={6}>
+        }} colSpan={7}>
 
 
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Chi tiết hoá đơn: {row.id}
-              </Typography>
+              {/* <Typography textAlign="center" variant="subtitle2" gutterBottom component="div">
+                Chi tiết hoá đơn:
+              </Typography> */}
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
                     <TableCell>Mã sản phẩm</TableCell>
                     <TableCell align="center">Số lượng</TableCell>
                     <TableCell align="right">Giá bán</TableCell>
-                    <TableCell align="right">Thành tiền</TableCell>
                     <TableCell align="right">Giảm giá</TableCell>
+                    <TableCell align="right">Thành tiền</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -103,10 +103,10 @@ function TableInvoiceRow({ handleRowClick, isItemSelected, labelId, row }: Table
                         {item.price}
                       </TableCell>
                       <TableCell align="right">
-                        {item.subTotal}
+                        {item.discount}
                       </TableCell>
                       <TableCell align="right">
-                        {item.discount}
+                        {item.subTotal}
                       </TableCell>
                     </TableRow>
                   ))}

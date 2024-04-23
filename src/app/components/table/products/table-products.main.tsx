@@ -15,8 +15,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
-import EnhancedTableHead, { EnhancedTableToolbar } from './table-products.head';
-import TableProductsPagination from '../table.pagination';
+import TablePagination from '../table.pagination';
+import { TableToolbar } from '../table.toolbar';
+import EnhancedTableHead from './table-products.head';
 
 
 interface TableProductsProps {
@@ -31,7 +32,6 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
   const [total, setTotal] = useState<number>(meta.itemCount)
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [page, setPage] = useState(0);
   const [message, setMessage] = useState<any>()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -109,15 +109,14 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
       }
       setIsLoading(false)
     }
-    console.log(">>> Check current: ", take, "--", currentPage)
 
 
-    if (currentPage !== meta.page || take !== meta.take) fetchData()
+    fetchData()
   }, [currentPage, take])
 
 
   return (
-    <Box sx={{ width: '100%', padding: 4 }}>
+    <Box sx={{ width: '100%' }}>
       <Snackbar
         open={open}
         autoHideDuration={4000}
@@ -128,9 +127,11 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
         width: '100%',
         mb: 4,
         borderRadius: 4,
-        boxShadow: `rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px`
+        boxShadow: {
+          md: `rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px`
+        }
       }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <TableToolbar title="Danh sách sản phẩm" numSelected={selected.length} />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -195,7 +196,7 @@ export default function TableProducts({ list, meta }: TableProductsProps) {
           </Table>
         </TableContainer>
       </Paper>
-      <TableProductsPagination
+      <TablePagination
         take={take}
         currentPage={currentPage}
         pageCount={pageCount}

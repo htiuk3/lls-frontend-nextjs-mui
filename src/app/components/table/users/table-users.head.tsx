@@ -5,7 +5,7 @@ import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof TProduct | "actions";
+  id: keyof TUser | "actions";
   label: string;
   numeric: boolean;
 }
@@ -15,39 +15,34 @@ const headCells: readonly HeadCell[] = [
     id: 'name',
     numeric: false,
     disablePadding: false,
-    label: 'Tên sản phẩm',
+    label: 'Tên',
   },
   {
-    id: 'code',
+    id: 'username',
     numeric: false,
     disablePadding: true,
-    label: 'Mã sản phẩm',
+    label: 'Tên đăng nhập',
   },
 
   {
-    id: 'cost',
+    id: 'phoneNumber',
     numeric: true,
     disablePadding: false,
-    label: 'Giá vốn',
+    label: 'Số điện thoại',
   },
   {
-    id: 'wholeSalePrice',
-    numeric: true,
+    id: 'isActive',
+    numeric: false,
     disablePadding: false,
-    label: 'Giá sỉ',
+    label: 'Trạng thái',
   },
   {
-    id: 'retailPrice',
-    numeric: true,
+    id: 'role',
+    numeric: false,
     disablePadding: false,
-    label: 'Giá lẻ',
+    label: 'Nhóm người dùng',
   },
-  {
-    id: 'onHand',
-    numeric: true,
-    disablePadding: false,
-    label: 'Tồn kho',
-  },
+
   {
     id: 'actions',
     numeric: false,
@@ -56,13 +51,13 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
-interface EnhancedTableHeadProps {
+interface TableUsersHeadProps {
   numSelected: number;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   rowCount: number;
 }
 
-export default function EnhancedTableHead({ onSelectAllClick, numSelected, rowCount, }: EnhancedTableHeadProps) {
+export default function TableUsersHead({ onSelectAllClick, numSelected, rowCount, }: TableUsersHeadProps) {
   return (
     <TableHead>
       <TableRow>
@@ -76,9 +71,6 @@ export default function EnhancedTableHead({ onSelectAllClick, numSelected, rowCo
               'aria-label': 'select all users',
             }}
           />
-        </TableCell>
-        <TableCell padding="none">
-
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
